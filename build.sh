@@ -1,14 +1,20 @@
-#!/bin/bash -e
+#!/bin/bash -eu
 
-VERSION=6.0.0
-
-rm -rf layer
-mkdir -p layer
-cp bootstrap.py layer/bootstrap
-chmod +x layer/bootstrap
+rm -rf layer/${PYPY_VERSION}
+mkdir -p layer/${PYPY_VERSION}
+if [[ ${PYPY_VERSION} == pypy3\.* ]]; then
+    cp bootstrap.py3 layer/${PYPY_VERSION}/bootstrap
+else
+    cp bootstrap.py2 layer/${PYPY_VERSION}/bootstrap
+fi
+chmod +x layer/${PYPY_VERSION}/bootstrap
 cd layer
-curl -OL https://bitbucket.org/squeaky/portable-pypy/downloads/pypy3.5-$VERSION-linux_x86_64-portable.tar.bz2
-tar -xvjf pypy3.5-$VERSION-linux_x86_64-portable.tar.bz2
-mv pypy3.5-$VERSION-linux_x86_64-portable pypy
-rm pypy3.5-$VERSION-linux_x86_64-portable.tar.bz2
-zip -r ../pypy35.zip .
+PKG_NAME=${PYPY_VERSION}-linux_x86_64-portable
+BZIP_FILE=${PKG_NAME}.tar.bz2
+if [ ! -f "$BZIP_FILE" ]; then
+    curl -OL https://bitbucket.org/squeaky/portable-pypy/downloads/${BZIP_FILE}
+fi
+cd ${PYPY_VERSION}
+tar -xvjf ../${BZIP_FILE}
+mv ${PKG_NAME} pypy
+zip -r ../../${PYPY_VERSION}.zip .

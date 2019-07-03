@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
-source regions.sh
+source conf.sh
 
-for region in "${PYPY35_REGIONS[@]}"; do
-  bucket_name="iopipe-layers-${region}"
+for region in "${PYPY_REGIONS[@]}"; do
+  bucket_name="${bucket_base_name}-${region}"
 
   echo "Creating bucket ${bucket_name}..."
 

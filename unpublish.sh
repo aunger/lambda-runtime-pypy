@@ -2,15 +2,15 @@
 
 VERSION=$1
 
-source regions.sh
+source conf.sh
 
-MD5SUM=$(md5 -q pypy35.zip)
-S3KEY="pypy3.5/${MD5SUM}.zip"
+MD5SUM=$(md5 -q ${PYPY}.zip)
+S3KEY="${PYPY}/${MD5SUM}.zip"
 
-for region in "${PYPY35_REGIONS[@]}"; do
-  bucket_name="iopipe-layers-${region}"
+for region in "${PYPY_REGIONS[@]}"; do
+  bucket_name="binaris-layers-${region}"
 
-  echo "Deleting Lambda Layer pypy3.5 version ${VERSION} in region ${region}..."
-  aws --region $region lambda delete-layer-version --layer-name pypy3.5 --version-number $VERSION
-  echo "Deleted Lambda Layer pypy3.5 version ${VERSION} in region ${region}"
+  echo "Deleting Lambda Layer ${PYPY} version ${VERSION} in region ${region}..."
+  aws --region $region lambda delete-layer-version --layer-name ${PYPY} --version-number $VERSION
+  echo "Deleted Lambda Layer ${PYPY} version ${VERSION} in region ${region}"
 done
