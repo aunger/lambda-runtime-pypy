@@ -5,7 +5,7 @@ Description: "PyPy Runtime SAM Example"
 Globals:
   Function:
     Layers:
-        - arn:aws:lambda:us-east-1:146318645305:layer:pypy35600:1
+        - arn:aws:lambda:us-east-1:146318645305:layer:pypy35:1
 
 Resources:
   PyPyExample:
