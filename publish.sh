@@ -1,5 +1,14 @@
 #!/bin/bash -eu
 
+publicize=0
+while getopts "p" opt
+do
+    case $opt in
+    (p) publicize=1 ;;
+    (*) exit 1 ;;
+    esac
+done
+
 source conf.sh
 
 MD5SUM=$(md5 -q ${PYPY_VERSION}.zip)
@@ -21,15 +30,17 @@ for region in "${PYPY_REGIONS[@]}"; do
       --region $region)
   echo "Published Lambda Layer ${PYPY} in region ${region} version ${version}"
 
-  echo "Setting public permissions on Lambda Layer ${PYPY} version ${version} in region ${region}..."
-  aws lambda add-layer-version-permission \
-      --layer-name ${PYPY//.} \
-      --version-number $version \
-      --statement-id public \
-      --action lambda:GetLayerVersion \
-      --principal "*" \
-      --region $region \
-      > /dev/null
-  echo "Public permissions set on Lambda Layer ${PYPY} version ${version} in region ${region}"
+  if (( publicize )); then
+    echo "Setting public permissions on Lambda Layer ${PYPY} version ${version} in region ${region}..."
+    aws lambda add-layer-version-permission \
+        --layer-name ${PYPY//.} \
+        --version-number $version \
+        --statement-id public \
+        --action lambda:GetLayerVersion \
+        --principal "*" \
+        --region $region \
+        > /dev/null
+    echo "Public permissions set on Lambda Layer ${PYPY} version ${version} in region ${region}"
+  fi
 
 done
