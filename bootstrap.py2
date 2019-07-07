@@ -7,6 +7,7 @@ import site
 import sys
 import urllib2 as request
 import time
+from contextlib import closing
 
 HANDLER = os.getenv("_HANDLER")
 RUNTIME_API = os.getenv("AWS_LAMBDA_RUNTIME_API")
@@ -53,19 +54,19 @@ def init_error(message, type):
         details,
         {"Content-Type": "application/json"},
     )
-    res = request.urlopen(req)
-    res.read()
+    with closing(request.urlopen(req)) as res:
+        res.read()
 
 
 def next_invocation():
-    res = request.urlopen(
+    with closing(request.urlopen(
         "http://{}/2018-06-01/runtime/invocation/next".format(RUNTIME_API)
-    )
-    request_id = res.info().getheader("lambda-runtime-aws-request-id")
-    invoked_function_arn = res.info().getheader("lambda-runtime-invoked-function-arn")
-    deadline_ms = res.info().getheader("lambda-runtime-deadline-ms")
-    trace_id = res.info().getheader("lambda-runtime-trace-id")
-    event_payload = res.read()
+    )) as res:
+        request_id = res.info().getheader("lambda-runtime-aws-request-id")
+        invoked_function_arn = res.info().getheader("lambda-runtime-invoked-function-arn")
+        deadline_ms = res.info().getheader("lambda-runtime-deadline-ms")
+        trace_id = res.info().getheader("lambda-runtime-trace-id")
+        event_payload = res.read()
     event = json.loads(event_payload.decode("utf-8"))
     context = LambdaContext(request_id, invoked_function_arn, deadline_ms, trace_id)
     return request_id, event, context
@@ -81,8 +82,8 @@ def invocation_response(request_id, handler_response):
         handler_response,
         {"Content-Type": "application/json"},
     )
-    res = request.urlopen(req)
-    res.read()
+    with closing(request.urlopen(req)) as res:
+        res.read()
 
 
 def invocation_error(request_id, error):
@@ -93,8 +94,8 @@ def invocation_error(request_id, error):
         details,
         {"Content-Type": "application/json"},
     )
-    res = request.urlopen(req)
-    res.read()
+    with closing(request.urlopen(req)) as res:
+        res.read()
 
 
 if __name__ == "__main__":
