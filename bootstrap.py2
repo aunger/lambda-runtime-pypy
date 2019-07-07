@@ -50,7 +50,7 @@ def init_error(message, type):
     details = {"errorMessage": message, "errorType": type}
     details = json.dumps(details).encode("utf-8")
     req = request.Request(
-        "http://{}/2018-06-01/runtime/init/error".format(RUNTIME_API),
+        "http://%s/2018-06-01/runtime/init/error" % RUNTIME_API,
         details,
         {"Content-Type": "application/json"},
     )
@@ -60,7 +60,7 @@ def init_error(message, type):
 
 def next_invocation():
     with closing(request.urlopen(
-        "http://{}/2018-06-01/runtime/invocation/next".format(RUNTIME_API)
+        "http://%s/2018-06-01/runtime/invocation/next" % RUNTIME_API
     )) as res:
         request_id = res.info().getheader("lambda-runtime-aws-request-id")
         invoked_function_arn = res.info().getheader("lambda-runtime-invoked-function-arn")
@@ -78,7 +78,8 @@ def invocation_response(request_id, handler_response):
     if not isinstance(handler_response, bytes):
         handler_response = handler_response.encode("utf-8")
     req = request.Request(
-        "http://{}/2018-06-01/runtime/invocation/{}/response".format(RUNTIME_API, request_id),
+        "http://%s/2018-06-01/runtime/invocation/%s/response"
+        % (RUNTIME_API, request_id),
         handler_response,
         {"Content-Type": "application/json"},
     )
@@ -90,7 +91,7 @@ def invocation_error(request_id, error):
     details = {"errorMessage": str(error), "errorType": type(error).__name__}
     details = json.dumps(details).encode("utf-8")
     req = request.Request(
-        "http://{}/2018-06-01/runtime/invocation/{}/error".format(RUNTIME_API, request_id),
+        "http://%s/2018-06-01/runtime/invocation/%s/error" % (RUNTIME_API, request_id),
         details,
         {"Content-Type": "application/json"},
     )
@@ -101,13 +102,13 @@ def invocation_error(request_id, error):
 if __name__ == "__main__":
     for runtime_var in ["AWS_LAMBDA_RUNTIME_API", "_HANDLER"]:
         if runtime_var not in os.environ:
-            init_error("{} environment variable not set".format(runtime_var), "RuntimeError")
+            init_error("%s environment variable not set" % runtime_var, "RuntimeError")
             sys.exit(1)
 
     try:
         module_path, handler_name = HANDLER.rsplit(".", 1)
     except ValueError:
-        init_error("Improperly formated handler value: {}s".format(HANDLER), "ValueError")
+        init_error("Improperly formated handler value: %s" % HANDLER, "ValueError")
         sys.exit(1)
 
     module_path = module_path.replace("/", ".")
@@ -115,14 +116,14 @@ if __name__ == "__main__":
     try:
         module = __import__(module_path)
     except ImportError:
-        init_error("Failed to import module: {}".format(module_path), "ImportError")
+        init_error("Failed to import module: %s" % module_path, "ImportError")
         sys.exit(1)
 
     try:
         handler = getattr(module, handler_name)
     except AttributeError:
         init_error(
-            "No handler {} in module {}".format(handler_name, module_path), "AttributeError"
+            "No handler %s in module %s" % (handler_name, module_path), "AttributeError"
         )
         sys.exit(1)
 
