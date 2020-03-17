@@ -15,4 +15,4 @@ PYPY_REGIONS=(
   #us-west-1
   #us-west-2
 )
-bucket_base_name=pypy-layers
+bucket_base_name=pypy-lambda-layers
