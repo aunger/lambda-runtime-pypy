@@ -12,7 +12,7 @@ cd layer
 PKG_NAME=${PYPY_VERSION}-linux_x86_64-portable
 BZIP_FILE=${PKG_NAME}.tar.bz2
 if [ ! -f "$BZIP_FILE" ]; then
-    curl -OL https://bitbucket.org/squeaky/portable-pypy/downloads/${BZIP_FILE}
+    curl -OL https://github.com/squeaky-pl/portable-pypy/releases/download/${PYPY_VERSION}/${BZIP_FILE}
 fi
 cd ${PYPY_VERSION}
 tar -xvjf ../${BZIP_FILE}
