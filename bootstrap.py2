@@ -7,6 +7,7 @@ import site
 import sys
 import urllib2 as request
 import time
+import traceback
 from contextlib import closing
 
 HANDLER = os.getenv("_HANDLER")
@@ -88,6 +89,7 @@ def invocation_response(request_id, handler_response):
 
 
 def invocation_error(request_id, error):
+    traceback.print_exc()
     details = {"errorMessage": str(error), "errorType": type(error).__name__}
     details = json.dumps(details).encode("utf-8")
     req = request.Request(
