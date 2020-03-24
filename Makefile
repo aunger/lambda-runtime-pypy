@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 
-PYPY_VERSIONS := pypy-7.1.1 pypy3.5-6.0.0
+PYPY_VERSIONS := pypy-7.1.1
 
 all: clean build upload publish
 
