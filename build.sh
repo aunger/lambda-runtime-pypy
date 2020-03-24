@@ -2,12 +2,14 @@
 
 rm -rf layer/${PYPY_VERSION}
 mkdir -p layer/${PYPY_VERSION}
+cp bootstrap.sh layer/${PYPY_VERSION}/bootstrap
 if [[ ${PYPY_VERSION} == pypy3\.* ]]; then
-    cp bootstrap.py3 layer/${PYPY_VERSION}/bootstrap
+    cp bootstrap.py3 layer/${PYPY_VERSION}/bootstrap.py
 else
-    cp bootstrap.py2 layer/${PYPY_VERSION}/bootstrap
+    cp bootstrap.py2 layer/${PYPY_VERSION}/bootstrap.py
 fi
 chmod +x layer/${PYPY_VERSION}/bootstrap
+chmod +x layer/${PYPY_VERSION}/bootstrap.py
 cd layer
 PKG_NAME=${PYPY_VERSION}-linux_x86_64-portable
 BZIP_FILE=${PKG_NAME}.tar.bz2
