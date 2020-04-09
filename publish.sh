@@ -11,7 +11,8 @@ done
 
 source conf.sh
 
-MD5SUM=$(md5 -q ${PYPY_VERSION}.zip)
+RUNTIME_ZIP="${PYPY_VERSION}.zip"
+MD5SUM=$(type -P md5 && md5 -q $RUNTIME_ZIP || md5sum $RUNTIME_ZIP | awk '{ print $1 }')
 PYPY=${PYPY_VERSION//-*}
 S3KEY="${PYPY}/${MD5SUM}.zip"
 

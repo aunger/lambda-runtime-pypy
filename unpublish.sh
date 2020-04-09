@@ -4,7 +4,8 @@ VERSION=$1
 
 source conf.sh
 
-MD5SUM=$(md5 -q ${PYPY}.zip)
+RUNTIME_ZIP="${PYPY_VERSION}.zip"
+MD5SUM=$(type -P md5 && md5 -q $RUNTIME_ZIP || md5sum $RUNTIME_ZIP | awk '{ print $1 }')
 S3KEY="${PYPY}/${MD5SUM}.zip"
 
 for region in "${PYPY_REGIONS[@]}"; do
