@@ -15,6 +15,8 @@ if [ ! -f "$BZIP_FILE" ]; then
     curl -OL https://bitbucket.org/pypy/pypy/downloads/${BZIP_FILE}
 fi
 cd ${PYPY_VERSION}
-tar -xvjf ../${BZIP_FILE}
+echo Extracting files from pypy download. Be patient.
+tar -xjf ../${BZIP_FILE}
 mv ${PKG_NAME} pypy
-zip -r ../../${PYPY_VERSION}.zip .
+echo Compressing Lambda layer files. Be patient.
+zip -r -q ../../${PYPY_VERSION}.zip .
